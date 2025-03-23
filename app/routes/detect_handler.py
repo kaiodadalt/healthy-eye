@@ -3,11 +3,15 @@ from PIL import Image
 import io
 from typing import List
 from app.models.detection import DetectionResponse
+from app.services.detector import DetectorService
 
 handler = APIRouter(
     prefix="/detect",
     tags=["detection"]
 )
+
+# Initialize detector service
+detector = DetectorService()
 
 @handler.post("", response_model=DetectionResponse)
 async def detect_fruits_vegetables(file: UploadFile = File(...)):
@@ -29,15 +33,14 @@ async def detect_fruits_vegetables(file: UploadFile = File(...)):
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
         
-        # TODO: Implement actual detection logic here
-        # For now, return mock data
-        mock_detection = {
-            "message": "Image processed successfully",
-            "detected_items": ["apple", "banana", "carrot"],
-            "confidence_scores": [0.95, 0.88, 0.92]
-        }
+        # Run detection
+        detected_items, confidence_scores = detector.detect(image)
         
-        return DetectionResponse(**mock_detection)
+        return DetectionResponse(
+            message="Image processed successfully",
+            detected_items=detected_items,
+            confidence_scores=confidence_scores
+        )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}") 

@@ -3,4 +3,9 @@ uvicorn==0.27.1
 pydantic==2.6.3
 python-multipart==0.0.9
 Pillow==10.2.0
-python-jose==3.3.0 
+python-jose==3.3.0
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+supervision>=0.18.0 
