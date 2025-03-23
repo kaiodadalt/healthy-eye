@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
-    title="FastAPI Starter",
-    description="A starter FastAPI project with hello world endpoint",
+    title="Healthy Eye",
+    description="A modern API for detecting fruits & vegetables in meal images.",
     version="1.0.0"
 )
 
