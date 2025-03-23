@@ -1,6 +1,13 @@
-# FastAPI Starter Project
+# Healthy-eye
 
-A simple FastAPI starter project with a hello world endpoint.
+A modern API for detecting fruits & vegetables in meal images. This project aims to help users identify and analyze the nutritional content of their meals through image recognition.
+
+## Features
+
+- Image-based fruit and vegetable detection
+- RESTful API endpoints for easy integration
+- Real-time processing capabilities
+- Comprehensive API documentation
 
 ## Setup
 
