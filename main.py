@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import detect_handler
 
 app = FastAPI(
-    title="Healthy Eye",
-    description="A modern API for detecting fruits & vegetables in meal images.",
+    title="Healthy-eye API",
+    description="API for detecting fruits & vegetables in meal images",
     version="1.0.0"
 )
 
@@ -18,11 +19,10 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Welcome to Healthy-eye API"}
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+# Include routers
+app.include_router(detect_handler.handler)
 
 if __name__ == "__main__":
     import uvicorn
