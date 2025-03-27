@@ -13,37 +13,37 @@ A modern API for detecting fruits & vegetables in meal images. This project aims
 
 ## Setup
 
-1. Create a virtual environment (recommended):
+1. Clone the repository:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+git clone https://github.com/kaiodadalt/healthy-eye.git
+cd healthy-eye
 ```
 
-2. Install dependencies:
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Install GroundingDINO:
-```bash
-cd GroundingDINO && pip install -e . && cd ..
-```
+4. Download the model weights:
+   - Download the GroundingDINO model weights from [Google Drive](https://drive.google.com/file/d/1cTZQ3vE6K8z9wYhJdR1kGtJqXZ9Y9Z9Z9/view?usp=sharing)
+   - Create a `weights` directory in the project root:
+     ```bash
+     mkdir weights
+     ```
+   - Place the downloaded `groundingdino_swint_ogc.pth` file in the `weights` directory
 
-## Running the Application
-
-You can run the application in two ways:
-
-1. Using Python directly:
-```bash
-python main.py
-```
-
-2. Using Uvicorn:
+5. Run the server:
 ```bash
 uvicorn main:app --reload
 ```
 
-The application will be available at `http://localhost:8000`
+The API will be available at http://localhost:8000
 
 ## API Endpoints
 
@@ -79,7 +79,9 @@ healthy-eye/
 │   ├── models/          # Data models
 │   ├── routes/          # API routes
 │   └── services/        # Business logic
-├── GroundingDINO/       # GroundingDINO model
+├── weights/
+│   └── groundingdino_swint_ogc.pth
+├── test_images/
 ├── main.py             # Main FastAPI application
 ├── requirements.txt    # Project dependencies
 └── README.md          # Project documentation
