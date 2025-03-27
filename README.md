@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ```
 
 4. Download the model weights:
-   - Download the GroundingDINO model weights from [Google Drive](https://drive.google.com/file/d/1cTZQ3vE6K8z9wYhJdR1kGtJqXZ9Y9Z9Z9/view?usp=sharing)
+   - Download the GroundingDINO model weights from [Google Drive](https://drive.google.com/file/d/1X-XS4k4RQ2CN6oJSitg0AozbcCbZO1wl/view?usp=sharing)
    - Create a `weights` directory in the project root:
      ```bash
      mkdir weights
