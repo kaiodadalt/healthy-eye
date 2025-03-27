@@ -75,7 +75,7 @@ async def detect_fruits_vegetables(file: UploadFile = File(...)):
         return DetectionResponse(
             message="Image processed successfully",
             detected_items=detected_items,
-            confidence_scores=confidence_scores
+            # confidence_scores=confidence_scores
         )
         
     except HTTPException:

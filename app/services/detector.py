@@ -1,11 +1,12 @@
 import torch
 from PIL import Image
 import numpy as np
-from groundingdino.util.inference import load_model, predict
+from groundingdino.util.inference import load_model, load_image, predict, annotate
 from groundingdino.models import GroundingDINO
 import os
 import cv2
 import traceback
+import tempfile
 
 class DetectorService:
     def __init__(self):
@@ -21,9 +22,11 @@ class DetectorService:
         # Move model to appropriate device
         self.model.to(self.device)
         
-        self.TEXT_PROMPT = "broccoli, carrot, tomato, chicken, rice, beans"
-        self.BOX_THRESHOLD = 0.35
-        self.TEXT_THRESHOLD = 0.25
+        # More specific text prompt for food detection
+        self.TEXT_PROMPT = "chicken, carrot, bean, rice, broccoli, tomato, potato, onion, garlic, meat, fish"
+        # Higher thresholds for more confident detections
+        self.BOX_THRESHOLD = 0.40  # Increased from 0.25
+        self.TEXT_THRESHOLD = 0.35  # Increased from 0.25
         
     def detect(self, image: Image.Image):
         """
@@ -36,36 +39,18 @@ class DetectorService:
             tuple: (list of detected items, list of confidence scores)
         """
         try:
-            # Convert PIL Image to numpy array
-            image_np = np.array(image)
+            # Save PIL Image to temporary file
+            with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp_file:
+                image.save(temp_file.name)
+                image_path = temp_file.name
             
-            # Ensure image is in RGB format
-            if len(image_np.shape) == 2:  # Grayscale
-                image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)
-            elif image_np.shape[2] == 4:  # RGBA
-                image_np = cv2.cvtColor(image_np, cv2.COLOR_RGBA2RGB)
-            
-            # Resize image if too large (max dimension 800px)
-            max_dim = 800
-            h, w = image_np.shape[:2]
-            if max(h, w) > max_dim:
-                scale = max_dim / max(h, w)
-                new_h, new_w = int(h * scale), int(w * scale)
-                image_np = cv2.resize(image_np, (new_w, new_h))
-            
-            # Convert RGB to BGR for OpenCV
-            image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-            
-            # Convert numpy array to tensor and normalize
-            image_tensor = torch.from_numpy(image_np).float()
-            image_tensor = image_tensor / 255.0
-            image_tensor = image_tensor.permute(2, 0, 1)  # HWC to CHW
-            image_tensor = image_tensor.to(self.device)
+            # Load image using GroundingDINO's load_image function
+            image_source, image = load_image(image_path)
             
             # Run detection
             boxes, logits, phrases = predict(
                 model=self.model,
-                image=image_tensor,
+                image=image,
                 caption=self.TEXT_PROMPT,
                 box_threshold=self.BOX_THRESHOLD,
                 text_threshold=self.TEXT_THRESHOLD,
@@ -80,6 +65,9 @@ class DetectorService:
                 for phrase, score in zip(phrases, logits):
                     detected_items.append(phrase)
                     confidence_scores.append(float(score))
+            
+            # Clean up temporary file
+            os.unlink(image_path)
             
             return detected_items, confidence_scores
             
